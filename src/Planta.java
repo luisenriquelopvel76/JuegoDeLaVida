@@ -1,5 +1,5 @@
 public class Planta extends Celda {
-    private static final int energiaMaxima = 50;
+    private static final int energiaMaxima = 20;
     private int energia;
 
     public Planta(int energiaInicial) {
@@ -9,18 +9,20 @@ public class Planta extends Celda {
 
     @Override
     public String toString() {
-        return "Planta{" +
-                "energia=" + energia +
-                '}';
+        return "Planta"
+//                +
+//                "energia=" + energia +
+//                '}'
+                ;
     }
 
-    public int getEnergia() {
-        return energia;
-    }
+//    public int getEnergia() {
+//        return energia;
+//    }
 
-    public void setEnergia(int energia) {
-        this.energia = energia;
-    }
+//    public void setEnergia(int energia) {
+//        this.energia = energia;
+//    }
 
     public void aumentaEnergia() {
         if (this.energia < energiaMaxima) {

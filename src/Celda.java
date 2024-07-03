@@ -1,6 +1,12 @@
 public abstract class Celda {
     private final Tipo tipo;
 
+    public enum Tipo {
+        ANIMAL,
+        PLANTA,
+        VACIA
+    }
+
     public Celda(Tipo tipo) {
         this.tipo = tipo;
     }
@@ -10,10 +16,5 @@ public abstract class Celda {
     }
 
     public abstract void pasoDelTiempo();
-
-    public enum Tipo {
-        ANIMAL,
-        PLANTA,
-        VACIO,
-    }
 }
+

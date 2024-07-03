@@ -1,29 +1,37 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.ref.Cleaner;
 import java.util.Arrays;
 import java.util.Random;
 
-public class Tablero {
+
+
+public class Tablero extends Thread {
     private final Celda[][] tablero;
     private final Random random;
 
     public Tablero() {
-        this.tablero = new Celda[Configuracion.tamanioDelTablero][Configuracion.tamanioDelTablero];
+        this.tablero = new Celda[Configuracion.altoDelTablero][Configuracion.anchoDelTablero];
         this.random = new Random();
         iniciarTablero();
     }
 
-    @Override
-    public String toString() {
-        return "Tablero{" +
-                "tablero=" + Arrays.toString(tablero) +
-                ", random=" + random +
-                '}';
-    }
+
+
+//    @Override
+//    public String toString() {
+//        return "Tablero"
+//
+//                +
+//                "tablero=" + Arrays.toString(tablero) +
+//                ", random=" + random +
+//                '}'
+//                ;
+//    }
 
     private void iniciarTablero() {
-        for (int i = 0; i < Configuracion.tamanioDelTablero; i++) {
-            for (int j = 0; j < Configuracion.tamanioDelTablero; j++) {
+        for (int i = 0; i < Configuracion.altoDelTablero; i++) {
+            for (int j = 0; j < Configuracion.anchoDelTablero; j++) {
                 int estado = random.nextInt(3);
 
                 switch (estado) {
@@ -42,26 +50,35 @@ public class Tablero {
     }
 
     public void pasoTiempo() {
-        for (int i = 0; i < Configuracion.tamanioDelTablero; i++) {
-            for (int j = 0; j < Configuracion.tamanioDelTablero; j++) {
+        for (int i = 0; i < Configuracion.altoDelTablero; i++) {
+            for (int j = 0; j < Configuracion.anchoDelTablero; j++) {
                 if (tablero[i][j] != null) {
                     tablero[i][j].pasoDelTiempo();
                 }
             }
-
         }
         moverAnimales();
         registrarEstadisticas();
     }
 
     private void moverAnimales() {
-        int x = 0;
-        int y = 0;
+        for (int i = 0; i < Configuracion.altoDelTablero; i++) {
+            for (int j = 0; j < Configuracion.anchoDelTablero; j++) {
+                if (tablero[i][j] instanceof Animal) {
+                    moverAnimal(i, j);
+                }
+            }
+        }
+
+    }
+
+    private void moverAnimal(int x, int y) {
+
         int nuevoX = x + random.nextInt(3) - 1;
         int nuevoY = y + random.nextInt(3) - 1;
-        if (nuevoX >= 0 && nuevoX < Configuracion.tamanioDelTablero && nuevoY >= 0 && nuevoY < Configuracion.tamanioDelTablero) {
-            x = nuevoX + 1;
-            y = nuevoY + 1;
+        if (nuevoX >= 0 && nuevoX < Configuracion.altoDelTablero && nuevoY >= 0 && nuevoY < Configuracion.anchoDelTablero) {
+            x += nuevoX;
+            y += nuevoY;
         }
     }
 
@@ -72,8 +89,8 @@ public class Tablero {
             int numeroDeNacimientos = 0;
             int numeroDeMuertes = 0;
 
-            for (int i = 0; i < Configuracion.tamanioDelTablero; i++) {
-                for (int j = 0; j < Configuracion.tamanioDelTablero; j++) {
+            for (int i = 0; i < Configuracion.altoDelTablero; i++) {
+                for (int j = 0; j < Configuracion.anchoDelTablero; j++) {
                     if (tablero[i][j] instanceof Planta) {
                         numeroDePlantas++;
                     } else if (tablero[i][j] instanceof Animal) {
@@ -81,7 +98,7 @@ public class Tablero {
                     }
                 }
             }
-            escribir.append("El Numero de plantas es: " + numeroDePlantas + ", El numero de animales es: " + numeroDeAnimales + ", El numero de nacimientos es: " + numeroDeNacimientos + " y El numero de muertos es: " + numeroDeMuertes + "\n");
+            escribir.append("El Numero de plantas es: ").append(String.valueOf(numeroDePlantas)).append(", El numero de animales es: ").append(String.valueOf(numeroDeAnimales)).append(", El numero de nacimientos es: ").append(String.valueOf(numeroDeNacimientos)).append(" y El numero de muertos es: ").append(String.valueOf(numeroDeMuertes)).append("\n");
 
 
         } catch (IOException e) {
@@ -90,15 +107,29 @@ public class Tablero {
     }
 
     public void imprimirTablero() {
-        for (int i = 0; i < Configuracion.tamanioDelTablero; i++) {
-            for (int j = 0; j < Configuracion.tamanioDelTablero; j++) {
+        for (int i = 0; i < Configuracion.altoDelTablero; i++) {
+            for (int j = 0; j < Configuracion.anchoDelTablero; j++) {
                 if (tablero[i][j] == null) {
-                    System.out.println("vacio\t");
+                    System.out.print("vacio" + " |");
                 } else {
-                    System.out.print(tablero[i][j] + "\t");
+                    System.out.print(tablero[i][j] + " |");
+
                 }
             }
+            System.out.println();
         }
-        System.out.println();
+
+    }
+
+    public void run() {
+        while (true) {
+            pasoTiempo();
+            imprimirTablero();
+            try {
+                Thread.sleep(1000); // Pausa de 1 segundo entre cada paso de tiempo
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
