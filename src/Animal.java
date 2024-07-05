@@ -13,7 +13,7 @@ public class Animal extends Celda {
 
     @Override
     public String toString() {
-        return "Animal"
+        return " A "
 //                +
 //                "" +
 //                "energia=" + energia +
@@ -22,25 +22,25 @@ public class Animal extends Celda {
                 ;
     }
 
-//    public int getEnergia() {
-//        return energia;
-//    }
-//
-//    public void setEnergia(int energia) {
-//        this.energia = energia;
-//    }
-//
-//    public int getEdad() {
-//        return edad;
-//    }
-//
-//    public void setEdad(int edad) {
-//        this.edad = edad;
-//    }
-//
-//    public void incrementaEdad() {
-//        this.edad++;
-//    }
+    public int getEnergia() {
+        return energia;
+    }
+
+    public void setEnergia(int energia) {
+        this.energia = energia;
+    }
+
+    public int getEdad() {
+        return edad;
+    }
+
+    public void setEdad(int edad) {
+        this.edad = edad;
+    }
+
+    public void incrementaEdad() {
+        this.edad++;
+    }
 
     @Override
     public void pasoDelTiempo() {

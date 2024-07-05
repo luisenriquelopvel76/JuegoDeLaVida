@@ -6,7 +6,7 @@ import java.util.Random;
 
 
 
-public class Tablero extends Thread {
+public class Tablero implements Runnable{
     private final Celda[][] tablero;
     private final Random random;
 
@@ -16,39 +16,28 @@ public class Tablero extends Thread {
         iniciarTablero();
     }
 
-
-
-//    @Override
-//    public String toString() {
-//        return "Tablero"
-//
-//                +
-//                "tablero=" + Arrays.toString(tablero) +
-//                ", random=" + random +
-//                '}'
-//                ;
-//    }
-
     private void iniciarTablero() {
         for (int i = 0; i < Configuracion.altoDelTablero; i++) {
             for (int j = 0; j < Configuracion.anchoDelTablero; j++) {
-                int estado = random.nextInt(3);
-
-                switch (estado) {
-                    case 0:
-                        tablero[i][j] = new Animal(Configuracion.energiaInicialAnimal);
-                        break;
-                    case 1:
-                        tablero[i][j] = new Planta(Configuracion.EnergiaInicialPlanta);
-                        break;
-                    default:
-                        tablero[i][j] = null;
-                        break;
-                }
+                tablero[i][j] = celdaAleatoria();
             }
         }
     }
 
+    private Celda celdaAleatoria(){
+                int estado = random.nextInt(3);
+                switch (estado) {
+                    case 0:
+                        return new  Animal(Configuracion.energiaInicialAnimal);
+
+                    case 1:
+                       return new Planta(Configuracion.EnergiaInicialPlanta);
+
+                    default:
+                       return null;
+
+                }
+            }
     public void pasoTiempo() {
         for (int i = 0; i < Configuracion.altoDelTablero; i++) {
             for (int j = 0; j < Configuracion.anchoDelTablero; j++) {
@@ -57,6 +46,7 @@ public class Tablero extends Thread {
                 }
             }
         }
+        iniciarTablero();
         moverAnimales();
         registrarEstadisticas();
     }
@@ -65,7 +55,7 @@ public class Tablero extends Thread {
         for (int i = 0; i < Configuracion.altoDelTablero; i++) {
             for (int j = 0; j < Configuracion.anchoDelTablero; j++) {
                 if (tablero[i][j] instanceof Animal) {
-                    moverAnimal(i, j);
+                    moverAnimal(i, j) ;
                 }
             }
         }
@@ -110,9 +100,9 @@ public class Tablero extends Thread {
         for (int i = 0; i < Configuracion.altoDelTablero; i++) {
             for (int j = 0; j < Configuracion.anchoDelTablero; j++) {
                 if (tablero[i][j] == null) {
-                    System.out.print("vacio" + " |");
+                    System.out.print(" . ");
                 } else {
-                    System.out.print(tablero[i][j] + " |");
+                    System.out.print(tablero[i][j]);
 
                 }
             }
@@ -120,16 +110,22 @@ public class Tablero extends Thread {
         }
 
     }
-
+    public void reiniciarTablero() {
+        // Usar secuencia de escape ANSI para limpiar la pantalla
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
     public void run() {
         while (true) {
+            reiniciarTablero();
             pasoTiempo();
             imprimirTablero();
             try {
-                Thread.sleep(1000); // Pausa de 1 segundo entre cada paso de tiempo
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
+
 }

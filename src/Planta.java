@@ -9,7 +9,7 @@ public class Planta extends Celda {
 
     @Override
     public String toString() {
-        return "Planta"
+        return " P "
 //                +
 //                "energia=" + energia +
 //                '}'
